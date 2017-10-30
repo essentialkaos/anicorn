@@ -2,7 +2,7 @@
 
 Summary:         Simple utility for starting/restarting Unicorn
 Name:            anicorn
-Version:         1.0.0
+Version:         1.1.0
 Release:         0%{?dist}
 Group:           Applications/System
 License:         EKOL
@@ -43,5 +43,9 @@ rm -rf %{buildroot}
 ###############################################################################
 
 %changelog
+* Mon Oct 30 2017 Anton Novojilov <andy@essentialkaos.com> - 1.1.0-0
+- Improved compatibility with Unicorn
+- Minor improvements
+
 * Fri Oct 27 2017 Anton Novojilov <andy@essentialkaos.com> - 1.0.0-0
 - Initial release

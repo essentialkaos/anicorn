@@ -3,7 +3,7 @@
 ########################################################################################
 
 APP="Anicorn"
-VER="1.0.0"
+VER="1.1.0"
 DESC="Simple utility for starting/restarting Unicorn"
 
 ########################################################################################
@@ -68,14 +68,19 @@ main() {
     exit 0
   fi
 
-  if [[ "$1" == "-h" || "$1" == "--help" ]] ; then
+  if [[ "$1" == "-h" || "$1" == "--help" || $# -eq 0 ]] ; then
     usage
     exit 0
   fi
 
+  if [[ "$1" == "-c" ]] ; then
+    unicorn_config="$2"
+  else
+    unicorn_config="$1"
+  fi
+
   checkRuby
 
-  unicorn_config="$1"
   pid_file=$(extractPathToPIDFile "$unicorn_config")
 
   checkConfig

@@ -1,0 +1,403 @@
+#!/usr/bin/env bash
+
+########################################################################################
+
+APP="Anicorn"
+VER="1.0.0"
+DESC="Simple utility for starting/restarting Unicorn"
+
+########################################################################################
+
+NORM=0
+BOLD=1
+UNLN=4
+RED=31
+GREEN=32
+YELLOW=33
+BLUE=34
+MAG=35
+CYAN=36
+GREY=37
+DARK=90
+
+CL_NORM="\e[0m"
+CL_BOLD="\e[0;${BOLD};49m"
+CL_UNLN="\e[0;${UNLN};49m"
+CL_RED="\e[0;${RED};49m"
+CL_GREEN="\e[0;${GREEN};49m"
+CL_YELLOW="\e[0;${YELLOW};49m"
+CL_BLUE="\e[0;${BLUE};49m"
+CL_MAG="\e[0;${MAG};49m"
+CL_CYAN="\e[0;${CYAN};49m"
+CL_GREY="\e[0;${GREY};49m"
+CL_DARK="\e[0;${DARK};49m"
+CL_BL_RED="\e[1;${RED};49m"
+CL_BL_GREEN="\e[1;${GREEN};49m"
+CL_BL_YELLOW="\e[1;${YELLOW};49m"
+CL_BL_BLUE="\e[1;${BLUE};49m"
+CL_BL_MAG="\e[1;${MAG};49m"
+CL_BL_CYAN="\e[1;${CYAN};49m"
+CL_BL_GREY="\e[1;${GREY};49m"
+
+########################################################################################
+
+DELAY_START=60
+DELAY_STOP=30
+DELAY_SIGNAL=5
+DELAY_MONITOR=5
+
+TMP_OUTPUT="/tmp/anicorn.output"
+
+########################################################################################
+
+# Path to Unicorn configuration file (String)
+unicorn_config=""
+
+# Path to PID file (String)
+pid_file=""
+
+# -
+# Monitoring flag (Boolean)
+disable_monitoring=""
+
+########################################################################################
+
+main() {
+  if [[ "$1" == "-v" || "$1" == "--version" ]] ; then
+    about
+    exit 0
+  fi
+
+  if [[ "$1" == "-h" || "$1" == "--help" ]] ; then
+    usage
+    exit 0
+  fi
+
+  checkRuby
+
+  unicorn_config="$1"
+  pid_file=$(extractPathToPIDFile "$unicorn_config")
+
+  checkConfig
+  checkPIDFile
+
+  log "$APP $VER is started"
+
+  trap sigHandler SIGTERM
+
+  startUnincorn
+  monitorUnicorn
+}
+
+# Check Unicorn configuration file
+#
+# Code: No
+# Echo: No
+checkConfig() {
+  if [[ ! -e "$unicorn_config" ]] ; then
+    log "[ERROR] Config $unicorn_config doesn't exist"
+    exit 1
+  fi
+
+  if [[ ! -f "$unicorn_config" ]] ; then
+    log "[ERROR] Config $unicorn_config isn't a file"
+    exit 1
+  fi
+
+  if [[ ! -s "$unicorn_config" ]] ; then
+    log "[ERROR] Config $unicorn_config is empty"
+    exit 1
+  fi
+}
+
+# Check if Ruby is installed
+#
+# Code: No
+# Echo: No
+checkRuby() {
+  type ruby &>/dev/null
+
+  if [[ $? -ne 0 ]] ; then
+    log "[ERROR] Ruby is required for $APP"
+    exit 1
+  fi
+}
+
+# Check path to PID file
+#
+# Code: No
+# Echo: No
+checkPIDFile() {
+  if [[ -z "$pid_file" ]] ; then
+    log "[ERROR] Can't extract path to PID file from Unicorn config"
+    exit 1
+  fi
+}
+
+# Run Unicorn
+#
+# Code: No
+# Echo: No
+startUnincorn() {
+  if [[ -e "$pid_file" ]] ; then
+    log "Unicorn already works, waiting for TERM signal..."
+    return
+  fi
+
+  disable_monitoring=true
+
+  log "Starting Unicorn..."
+
+  local pid
+
+  unicorn -c "$unicorn_config" -D &> $TMP_OUTPUT
+
+  if [[ $? -ne 0 ]] ; then
+    log "[ERROR] Can't start Unicorn. Output saved as $TMP_OUTPUT"
+    exit 1
+  fi
+
+  if ! isUnicornWorks ; then
+    log "[ERROR] Can't start Unicorn. Output saved as $TMP_OUTPUT"
+    exit 1
+  fi
+
+  pid=$(getPID)
+
+  log "Unicorn successfully started (PID: $pid)"
+
+  disable_monitoring=""
+
+  rm -f $TMP_OUTPUT
+}
+
+# Restart Unicorn
+#
+# Code: No
+# Echo: No
+restartUnicron() {
+  local pid
+
+  pid=$(getPID)
+
+  if [[ -z "$pid" ]] ; then
+    log "[ERROR] Looks like Unicorn is already down."
+    return 1
+  fi
+
+  log "Restarting Unicorn (PID: $pid)..."
+
+  kill -USR2 "$pid"
+  sleep $DELAY_SIGNAL
+  kill -QUIT "$pid"
+
+  if isUnicornRestarted "$pid" ; then
+    pid=$(getPID)
+    log "Unicorn restarted (New PID: ${pid:-unknown})"
+    return 0
+  fi
+
+  log "[ERROR] Can't restart Unicorn"
+  return 1
+}
+
+# Monitor Unicorn process state
+#
+# Code: No
+# Echo: No
+monitorUnicorn() {
+  local pid
+
+  while : ; do
+    sleep $DELAY_MONITOR
+
+    if [[ -n "$disable_monitoring" ]] ; then
+      continue
+    fi
+
+    pid=$(getPID)
+
+    if [[ -z "$pid" || ! -e "/proc/$pid" ]] ; then
+      log "[WARN] Looks like Unicorn is down. Restarting..."
+
+      startUnincorn
+    fi
+  done
+}
+
+# TERM signal handler
+#
+# Code: No
+# Echo: No
+sigHandler() {
+  local ec
+
+  log "Got TERM signal"
+
+  # Temporary disable monitoring
+  disable_monitoring=true
+
+  restartUnicron
+
+  ec=$?
+
+  log "$APP is now getting shutdown"
+
+  exit $ec
+}
+
+# Check if Unicorn is works
+#
+# Code: Yes
+# Echo: No
+isUnicornWorks() {
+  local pid
+
+  for i in $(seq 0 $DELAY_START) ; do
+    sleep 1
+
+    if [[ ! -e "$pid_file" ]] ; then
+      continue
+    fi
+
+    pid=$(getPID)
+
+    if [[ "$pid" == "" || ! -e "/proc/$pid" ]] ; then
+      continue
+    fi
+
+    return 0
+  done
+
+  return 1
+}
+
+# Check if Unicorn process successfully restarted
+#
+# 1: Old PID (Number)
+#
+# Code: Yes
+# Echo: No
+isUnicornRestarted() {
+  local old_pid="$1"
+
+  local is_unicorn_dead pid
+
+  for i in $(seq 0 $DELAY_STOP) ; do
+    sleep 1
+
+    if [[ ! -e "/proc/$old_pid" ]] ; then
+      is_unicorn_dead=true
+      break
+    fi
+  done
+
+  if [[ -z "$is_unicorn_dead" ]] ; then
+    log "[ERROR] Unicorn still alive after $DELAY_STOP seconds"
+    return 1
+  fi
+
+  for i in $(seq 0 $DELAY_START) ; do
+    sleep 1
+
+    pid=$(getPID)
+
+    if [[ "$pid" == "" || ! -e "/proc/$pid" ]] ; then
+      continue
+    fi
+
+    return 0
+  done
+
+  return 1
+}
+
+# Read PID from PID file
+#
+# Code: No
+# Echo: PID (Number)
+getPID() {
+  if [[ ! -e "$pid_file" ]] ; then
+    echo ""
+    return
+  fi
+
+  tr -d '\n\r' < "$pid_file"
+}
+
+# Extract path to PID file from Unicorn config
+#
+# 1: Path to configuration file (String)
+#
+# Code: No
+# Echo: Path to PID file (String)
+extractPathToPIDFile() {
+  ruby -e "%w(after_fork after_worker_exit after_worker_ready before_exec before_fork check_client_connection client_body_buffer_size listen logger preload_app rewindable_input stderr_path stdout_path timeout user worker_exec worker_processes working_directory).each{|m| define_method(m){|*|} }; def pid(pid); puts pid; end; eval File.read '$1'" 2>/dev/null
+}
+
+# Print message with current time
+#
+# 1: Message (String)
+#
+# Code: No
+# Echo: No
+log() {
+  local now
+
+  now=$(date +'[ %Y/%m/%d %H:%M:%S ]')
+
+  echo "$now $*"
+}
+
+# Show message
+#
+# 1: Message (String)
+# 2: Message color (Number) [Optional]
+#
+# Code: No
+# Echo: No
+show() {
+  if [[ -n "$2" ]] ; then
+    echo -e "\e[${2}m${1}\e[0m"
+  else
+    echo -e "$*"
+  fi
+}
+
+########################################################################################
+
+# Print usage info
+#
+# Code: No
+# Echo: No
+usage() {
+  show ""
+  show "${CL_BOLD}Usage:${CL_NORM} anicorn unicorn-conf"
+  show ""
+  show "Params" $BOLD
+  show ""
+  show "  ${CL_CYAN}unicorn-conf${CL_NORM}  Path to Unicorn configuration file"
+  show ""
+  show "Examples" $BOLD
+  show ""
+  show "  anicorn /srv/projects/example/current/config/unicorn.rb"
+  show "  Run Unicorn with Anicorn" $DARK
+  show ""
+}
+
+# Show info about version
+#
+# Code: No
+# Echo: No
+about() {
+  show ""
+  show "${CL_BL_CYAN}$APP${CL_NORM} ${CL_CYAN}$VER${CL_NORM} - $DESC"
+  show ""
+  show "Copyright (C) 2009-$(date +%Y) ESSENTIAL KAOS" $DARK
+  show "Essential Kaos Open Source License <http://essentialkaos.com/ekol>" $DARK
+  show ""
+}
+
+########################################################################################
+
+main "$@"

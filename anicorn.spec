@@ -2,7 +2,7 @@
 
 Summary:         Simple utility for starting/restarting Unicorn
 Name:            anicorn
-Version:         1.1.0
+Version:         2.0.0
 Release:         0%{?dist}
 Group:           Applications/System
 License:         EKOL
@@ -43,6 +43,10 @@ rm -rf %{buildroot}
 ###############################################################################
 
 %changelog
+* Wed Nov 08 2017 Anton Novojilov <andy@essentialkaos.com> - 2.0.0-0
+- Added shutdown watchdog mode
+- Improved Unicorn restart sequence
+
 * Mon Oct 30 2017 Anton Novojilov <andy@essentialkaos.com> - 1.1.0-0
 - Improved compatibility with Unicorn
 - Minor improvements

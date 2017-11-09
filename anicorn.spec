@@ -45,6 +45,7 @@ rm -rf %{buildroot}
 %changelog
 * Thu Nov 09 2017 Anton Novojilov <andy@essentialkaos.com> - 2.1.0-0
 - Improved Unicorn restart resilience
+- Fixed bug with starting watchdog
 
 * Thu Nov 09 2017 Anton Novojilov <andy@essentialkaos.com> - 2.0.1-0
 - Minor improvements

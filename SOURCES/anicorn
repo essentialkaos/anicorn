@@ -257,6 +257,8 @@ sigHandler() {
 
   log "Running watchdog process to kill Unicorn in $DELAY_PID_MONITOR seconds"
 
+  runWatchdog
+
   log "$APP is now shutting down"
 
   exit 0

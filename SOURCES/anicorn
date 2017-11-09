@@ -42,7 +42,7 @@ CL_BL_GREY="\e[1;${GREY};49m"
 ########################################################################################
 
 DELAY_START=60
-DELAY_SIGNAL=5
+DELAY_SIGNAL=20
 DELAY_MONITOR=5
 DELAY_PID_MONITOR=15
 

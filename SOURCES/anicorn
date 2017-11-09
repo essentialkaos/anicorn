@@ -41,8 +41,7 @@ CL_BL_GREY="\e[1;${GREY};49m"
 
 ########################################################################################
 
-DELAY_START=60
-DELAY_SIGNAL=20
+DELAY_START=30
 DELAY_MONITOR=5
 DELAY_PID_MONITOR=15
 
@@ -210,7 +209,7 @@ restartUnicorn() {
   kill -USR2 "$pid"
 
   if isNewMasterSpawned "$pid" ; then
-    sleep $DELAY_SIGNAL
+    sleep $DELAY_START
     kill -QUIT "$pid"
     pid=$(getPID)
     log "Unicorn restarted (New PID: ${pid:-unknown})"

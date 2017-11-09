@@ -178,7 +178,7 @@ startUnicorn() {
     exit 1
   fi
 
-  if ! isUnicornWorks ; then
+  if ! isUnicornWorking ; then
     log "[ERROR] Can't start Unicorn. Output saved as $TMP_OUTPUT"
     exit 1
   fi
@@ -259,16 +259,16 @@ sigHandler() {
 
   log "Running watchdog process"
 
-  log "$APP is now getting shutdown"
+  log "$APP is now shutting down"
 
   exit 0
 }
 
-# Check if Unicorn is works
+# Check if Unicorn is working
 #
 # Code: Yes
 # Echo: No
-isUnicornWorks() {
+isUnicornWorking() {
   local pid
 
   for i in $(seq 0 $DELAY_START) ; do
@@ -330,7 +330,7 @@ isUnicornRestarted() {
   return 1
 }
 
-# Run anicorn as process monitor current Unicorn process
+# Run anicorn as a process monitor for current Unicorn process
 #
 # 1: PID (Number)
 #
@@ -351,7 +351,7 @@ runWatchdog() {
   disown
 }
 
-# Terminate Unicorn if it isn't restarted
+# Terminate Unicorn if it hasn't been restarted
 #
 # 1: PID (Number)
 #

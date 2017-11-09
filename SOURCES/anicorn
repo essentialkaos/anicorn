@@ -257,7 +257,7 @@ sigHandler() {
   # Temporary disable monitoring
   disable_monitoring=true
 
-  log "Running watchdog process"
+  log "Running watchdog process to kill Unicorn in $DELAY_PID_MONITOR seconds"
 
   log "$APP is now shutting down"
 
@@ -369,6 +369,8 @@ monitorStoppedUnicorn() {
   done
 
   kill -TERM "$pid"
+
+  log "Unicorn has not been restarted in $DELAY_PID_MONITOR seconds after $APP shutdown so it has been terminated"
 }
 
 # Read PID from PID file

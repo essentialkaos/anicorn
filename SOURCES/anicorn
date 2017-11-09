@@ -41,9 +41,7 @@ CL_BL_GREY="\e[1;${GREY};49m"
 
 ########################################################################################
 
-DELAY_START=60
-DELAY_STOP=30
-DELAY_SIGNAL=5
+DELAY_START=30
 DELAY_MONITOR=5
 DELAY_PID_MONITOR=15
 
@@ -209,10 +207,10 @@ restartUnicorn() {
   log "Restarting Unicorn (PID: $pid)..."
 
   kill -USR2 "$pid"
-  sleep $DELAY_SIGNAL
-  kill -QUIT "$pid"
 
-  if isUnicornRestarted "$pid" ; then
+  if isNewMasterSpawned "$pid" ; then
+    sleep $DELAY_START
+    kill -QUIT "$pid"
     pid=$(getPID)
     log "Unicorn restarted (New PID: ${pid:-unknown})"
     return 0
@@ -290,30 +288,15 @@ isUnicornWorking() {
   return 1
 }
 
-# Check if Unicorn process successfully restarted
+# Check if new Unicorn master process has successfully started
 #
 # 1: Old PID (Number)
 #
 # Code: Yes
 # Echo: No
-isUnicornRestarted() {
+isNewMasterSpawned() {
   local old_pid="$1"
-
-  local is_unicorn_dead pid
-
-  for i in $(seq 0 $DELAY_STOP) ; do
-    sleep 1
-
-    if [[ ! -e "/proc/$old_pid" ]] ; then
-      is_unicorn_dead=true
-      break
-    fi
-  done
-
-  if [[ -z "$is_unicorn_dead" ]] ; then
-    log "[ERROR] Unicorn still alive after $DELAY_STOP seconds"
-    return 1
-  fi
+  local pid
 
   for i in $(seq 0 $DELAY_START) ; do
     sleep 1

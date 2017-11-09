@@ -3,7 +3,7 @@
 ########################################################################################
 
 APP="Anicorn"
-VER="2.0.0"
+VER="2.0.1"
 DESC="Simple utility for starting/restarting Unicorn"
 
 ########################################################################################
@@ -105,7 +105,7 @@ main() {
 
   trap sigHandler SIGTERM
 
-  startUnincorn
+  startUnicorn
   monitorUnicorn
 }
 
@@ -158,10 +158,10 @@ checkPIDFile() {
 #
 # Code: No
 # Echo: No
-startUnincorn() {
+startUnicorn() {
   if [[ -e "$pid_file" ]] ; then
     log "Unicorn already works, restarting..."
-    restartUnicron
+    restartUnicorn
     return
   fi
 
@@ -178,7 +178,7 @@ startUnincorn() {
     exit 1
   fi
 
-  if ! isUnicornWorks ; then
+  if ! isUnicornWorking ; then
     log "[ERROR] Can't start Unicorn. Output saved as $TMP_OUTPUT"
     exit 1
   fi
@@ -196,7 +196,7 @@ startUnincorn() {
 #
 # Code: No
 # Echo: No
-restartUnicron() {
+restartUnicorn() {
   local pid
 
   pid=$(getPID)
@@ -219,7 +219,7 @@ restartUnicron() {
   fi
 
   log "[ERROR] Can't restart Unicorn"
-  
+
   return 1
 }
 
@@ -242,7 +242,7 @@ monitorUnicorn() {
     if [[ -z "$pid" || ! -e "/proc/$pid" ]] ; then
       log "[WARN] Looks like Unicorn is down. Restarting..."
 
-      startUnincorn
+      startUnicorn
     fi
   done
 }
@@ -257,18 +257,18 @@ sigHandler() {
   # Temporary disable monitoring
   disable_monitoring=true
 
-  log "Running watchdog process"
+  log "Running watchdog process to kill Unicorn in $DELAY_PID_MONITOR seconds"
 
-  log "$APP is now getting shutdown"
+  log "$APP is now shutting down"
 
   exit 0
 }
 
-# Check if Unicorn is works
+# Check if Unicorn is working
 #
 # Code: Yes
 # Echo: No
-isUnicornWorks() {
+isUnicornWorking() {
   local pid
 
   for i in $(seq 0 $DELAY_START) ; do
@@ -330,7 +330,7 @@ isUnicornRestarted() {
   return 1
 }
 
-# Run anicorn as process monitor current Unicorn process
+# Run anicorn as a process monitor for current Unicorn process
 #
 # 1: PID (Number)
 #
@@ -351,7 +351,7 @@ runWatchdog() {
   disown
 }
 
-# Terminate Unicorn if it isn't restarted
+# Terminate Unicorn if it hasn't been restarted
 #
 # 1: PID (Number)
 #
@@ -369,6 +369,8 @@ monitorStoppedUnicorn() {
   done
 
   kill -TERM "$pid"
+
+  log "Unicorn has not been restarted in $DELAY_PID_MONITOR seconds after $APP shutdown so it has been terminated"
 }
 
 # Read PID from PID file

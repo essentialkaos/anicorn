@@ -105,7 +105,7 @@ main() {
 
   trap sigHandler SIGTERM
 
-  startUnincorn
+  startUnicorn
   monitorUnicorn
 }
 
@@ -158,10 +158,10 @@ checkPIDFile() {
 #
 # Code: No
 # Echo: No
-startUnincorn() {
+startUnicorn() {
   if [[ -e "$pid_file" ]] ; then
     log "Unicorn already works, restarting..."
-    restartUnicron
+    restartUnicorn
     return
   fi
 
@@ -196,7 +196,7 @@ startUnincorn() {
 #
 # Code: No
 # Echo: No
-restartUnicron() {
+restartUnicorn() {
   local pid
 
   pid=$(getPID)
@@ -219,7 +219,7 @@ restartUnicron() {
   fi
 
   log "[ERROR] Can't restart Unicorn"
-  
+
   return 1
 }
 
@@ -242,7 +242,7 @@ monitorUnicorn() {
     if [[ -z "$pid" || ! -e "/proc/$pid" ]] ; then
       log "[WARN] Looks like Unicorn is down. Restarting..."
 
-      startUnincorn
+      startUnicorn
     fi
   done
 }

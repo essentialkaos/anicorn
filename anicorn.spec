@@ -2,7 +2,7 @@
 
 Summary:         Simple utility for starting/restarting Unicorn
 Name:            anicorn
-Version:         2.1.0
+Version:         2.1.1
 Release:         0%{?dist}
 Group:           Applications/System
 License:         EKOL
@@ -43,6 +43,11 @@ rm -rf %{buildroot}
 ###############################################################################
 
 %changelog
+* Fri Nov 10 2017 Anton Novojilov <andy@essentialkaos.com> - 2.1.1-0
+- Fixed bug with killing old Unicorn master by the watchdog before sending
+  QUIT signal
+- Removed useless log message from watchdog
+
 * Thu Nov 09 2017 Anton Novojilov <andy@essentialkaos.com> - 2.1.0-0
 - Improved Unicorn restart resilience
 - Fixed bug with starting watchdog

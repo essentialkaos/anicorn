@@ -3,7 +3,7 @@
 ########################################################################################
 
 APP="Anicorn"
-VER="2.1.0"
+VER="2.1.1"
 DESC="Simple utility for starting/restarting Unicorn"
 
 ########################################################################################
@@ -41,9 +41,10 @@ CL_BL_GREY="\e[1;${GREY};49m"
 
 ########################################################################################
 
-DELAY_START=30
+DELAY_START=15
+DELAY_INIT=30
 DELAY_MONITOR=5
-DELAY_PID_MONITOR=15
+DELAY_WATCHDOG_KILL=60
 
 # Path to temporary file for output
 TMP_OUTPUT="/tmp/anicorn.output"
@@ -209,7 +210,7 @@ restartUnicorn() {
   kill -USR2 "$pid"
 
   if isNewMasterSpawned "$pid" ; then
-    sleep $DELAY_START
+    sleep $DELAY_INIT
     kill -QUIT "$pid"
     pid=$(getPID)
     log "Unicorn restarted (New PID: ${pid:-unknown})"
@@ -255,7 +256,7 @@ sigHandler() {
   # Temporary disable monitoring
   disable_monitoring=true
 
-  log "Running watchdog process to kill Unicorn in $DELAY_PID_MONITOR seconds"
+  log "Running watchdog process to kill Unicorn in $DELAY_WATCHDOG_KILL seconds"
 
   runWatchdog
 
@@ -345,7 +346,7 @@ runWatchdog() {
 monitorStoppedUnicorn() {
   local pid="$1"
 
-  for i in $(seq 0 $DELAY_PID_MONITOR) ; do
+  for i in $(seq 0 $DELAY_WATCHDOG_KILL) ; do
     if [[ ! -e "/proc/$pid" ]] ; then
       exit 0
     fi
@@ -354,8 +355,6 @@ monitorStoppedUnicorn() {
   done
 
   kill -TERM "$pid"
-
-  log "Unicorn has not been restarted in $DELAY_PID_MONITOR seconds after $APP shutdown so it has been terminated"
 }
 
 # Read PID from PID file

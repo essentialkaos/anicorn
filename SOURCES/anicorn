@@ -44,7 +44,7 @@ CL_BL_GREY="\e[1;${GREY};49m"
 DELAY_START=15
 DELAY_INIT=30
 DELAY_MONITOR=5
-DELAY_PID_MONITOR=60
+DELAY_WATCHDOG_KILL=60
 
 # Path to temporary file for output
 TMP_OUTPUT="/tmp/anicorn.output"
@@ -256,7 +256,7 @@ sigHandler() {
   # Temporary disable monitoring
   disable_monitoring=true
 
-  log "Running watchdog process to kill Unicorn in $DELAY_PID_MONITOR seconds"
+  log "Running watchdog process to kill Unicorn in $DELAY_WATCHDOG_KILL seconds"
 
   runWatchdog
 
@@ -346,7 +346,7 @@ runWatchdog() {
 monitorStoppedUnicorn() {
   local pid="$1"
 
-  for i in $(seq 0 $DELAY_PID_MONITOR) ; do
+  for i in $(seq 0 $DELAY_WATCHDOG_KILL) ; do
     if [[ ! -e "/proc/$pid" ]] ; then
       exit 0
     fi

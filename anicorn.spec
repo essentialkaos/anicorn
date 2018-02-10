@@ -1,8 +1,8 @@
-###############################################################################
+################################################################################
 
 Summary:         Simple utility for starting/restarting Unicorn
 Name:            anicorn
-Version:         2.1.1
+Version:         2.1.2
 Release:         0%{?dist}
 Group:           Applications/System
 License:         EKOL
@@ -15,12 +15,12 @@ BuildRoot:       %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Provides:        %{name} = %{version}-%{release}
 
-###############################################################################
+################################################################################
 
 %description
 Simple utility for starting/restarting Unicorn.
 
-###############################################################################
+################################################################################
 
 %prep
 %setup -q
@@ -40,9 +40,12 @@ rm -rf %{buildroot}
 %doc LICENSE.EN LICENSE.RU
 %{_bindir}/%{name}
 
-###############################################################################
+################################################################################
 
 %changelog
+* Sun Feb 11 2018 Anton Novojilov <andy@essentialkaos.com> - 2.1.2-0
+- Fixed bug with trying to use PID of dead Unicorn process when PID file exists
+
 * Fri Nov 10 2017 Anton Novojilov <andy@essentialkaos.com> - 2.1.1-0
 - Fixed bug with killing old Unicorn master by the watchdog before sending
   QUIT signal

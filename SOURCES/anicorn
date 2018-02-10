@@ -376,7 +376,7 @@ getPID() {
     return
   fi
 
-  echo $pid
+  echo "$pid"
 }
 
 # Extract path to PID file from Unicorn config

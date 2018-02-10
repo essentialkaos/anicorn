@@ -357,17 +357,26 @@ monitorStoppedUnicorn() {
   kill -TERM "$pid"
 }
 
-# Read PID from PID file
+# Read PID from PID file and validate it
 #
 # Code: No
 # Echo: PID (Number)
 getPID() {
+  local pid
+
   if [[ ! -e "$pid_file" ]] ; then
     echo ""
     return
   fi
 
-  tr -d '\n\r' < "$pid_file"
+  pid=$(tr -d '\n\r' < "$pid_file")
+
+  if [[ ! -e "/proc/$pid" ]] ; then
+    echo ""
+    return
+  fi
+
+  echo $pid
 }
 
 # Extract path to PID file from Unicorn config

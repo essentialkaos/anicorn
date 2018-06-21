@@ -7,7 +7,9 @@
   <a href="https://essentialkaos.com/ekol"><img src="https://gh.kaos.st/ekol.svg"></a>
 </p>
 
-`Anicorn` it is a simple utility for starting/restarting [Unicorn HTTP server](https://bogomips.org/unicorn/).
+`anicorn` it's a simple utility for starting/restarting [Unicorn HTTP server](https://bogomips.org/unicorn/) while using init system.
+
+*Attention!* If you use anicorn with systemd, you should set [`KillMode`](https://www.freedesktop.org/software/systemd/man/systemd.kill.html#KillMode=) to `process` (`control-group` by default).
 
 ### Installation
 

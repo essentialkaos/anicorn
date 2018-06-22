@@ -2,7 +2,7 @@
 
 Summary:         Simple utility for starting/restarting Unicorn
 Name:            anicorn
-Version:         2.1.3
+Version:         2.1.4
 Release:         0%{?dist}
 Group:           Applications/System
 License:         EKOL
@@ -43,6 +43,9 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Fri Jun 22 2018 Anton Novojilov <andy@essentialkaos.com> - 2.1.4-0
+- Fixed bug with handling command line arguments
+
 * Thu Jun 21 2018 Anton Novojilov <andy@essentialkaos.com> - 2.1.3-0
 - Fixed bug with handling a huge amount of arguments
 

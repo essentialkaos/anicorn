@@ -162,7 +162,7 @@ checkPIDFile() {
   pid=$(getPID)
 
   if [[ "$pid" == "" && -e "$pid_file" ]] ; then
-      rm -f $pid_file
+      rm -f "$pid_file"
   fi
 }
 

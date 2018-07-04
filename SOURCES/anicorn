@@ -3,7 +3,7 @@
 ########################################################################################
 
 APP="Anicorn"
-VER="2.1.4"
+VER="2.1.5"
 DESC="Simple utility for starting/restarting Unicorn"
 
 ########################################################################################
@@ -147,7 +147,7 @@ checkRuby() {
   fi
 }
 
-# Check path to PID file
+# Check path to PID file and clean PID file if it exists and process is dead
 #
 # Code: No
 # Echo: No
@@ -155,6 +155,14 @@ checkPIDFile() {
   if [[ -z "$pid_file" ]] ; then
     log "[ERROR] Can't extract path to PID file from Unicorn config"
     exit 1
+  fi
+
+  local pid
+
+  pid=$(getPID)
+
+  if [[ "$pid" == "" && -e "$pid_file" ]] ; then
+      rm -f $pid_file
   fi
 }
 

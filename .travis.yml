@@ -1,12 +1,17 @@
+language: bash
+
 sudo: required
 
 services:
   - docker
 
-language: bash
-
 matrix:
   fast_finish: true
+
+env:
+  global:
+    - IMAGE=essentialkaos/perfecto:centos7
+    - SHELLCHECK_OPTS='-e SC2034 -e SC2181 -e SC2015 -e SC2154 -e SC1117'
 
 before_install:
   - wget https://storage.googleapis.com/shellcheck/shellcheck-latest.linux.x86_64.tar.xz
@@ -15,11 +20,6 @@ before_install:
   - docker pull "$IMAGE"
   - wget https://raw.githubusercontent.com/essentialkaos/perfecto/master/perfecto-docker
   - chmod +x perfecto-docker
-
-env:
-  global:
-    - IMAGE=essentialkaos/perfecto:centos7
-    - SHELLCHECK_OPTS='-e SC2034 -e SC2181 -e SC2015 -e SC2154 -e SC1117'
 
 script:
  - bash -c 'shopt -s globstar; ./shellcheck-latest/shellcheck SOURCES/anicorn'

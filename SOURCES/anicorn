@@ -159,7 +159,8 @@ isUnicornProcess() {
     pid="$1"
 
     if [[ -e "/proc/$pid" ]] ; then
-        return $(grep -qaE ^unicorn < "/proc/$pid/cmdline")
+        grep -qaE ^unicorn < "/proc/$pid/cmdline"
+        return $?
     else
         return 1
     fi

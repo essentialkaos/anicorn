@@ -151,7 +151,7 @@ checkRuby() {
 #
 # 1: Process ID (Integer)
 #
-# Code: No
+# Code: Yes
 # Echo: No
 isUnicornProcess() {
     local pid

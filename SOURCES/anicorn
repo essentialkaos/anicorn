@@ -147,6 +147,24 @@ checkRuby() {
   fi
 }
 
+# Check if running process is Unicorn
+#
+# 1: Process ID (Integer)
+#
+# Code: No
+# Echo: No
+isUnicornProcess() {
+    local pid
+
+    pid="$1"
+
+    if [[ -e "/proc/$pid" ]] ; then
+        return $(grep -qaE ^unicorn < "/proc/$pid/cmdline")
+    else
+        return 1
+    fi
+}
+
 # Check path to PID file and clean PID file if it exists and process is dead
 #
 # Code: No
@@ -163,6 +181,11 @@ checkPIDFile() {
 
   if [[ "$pid" == "" && -e "$pid_file" ]] ; then
       rm -f "$pid_file"
+  fi
+
+  if ! isUnicornProcess "$pid" ; then
+    log "[ERROR] Running process with PID ${pid} is not a Unicorn"
+    exit 1
   fi
 }
 

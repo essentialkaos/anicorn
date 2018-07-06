@@ -184,9 +184,11 @@ checkPIDFile() {
       rm -f "$pid_file"
   fi
 
-  if ! isUnicornProcess "$pid" ; then
-    log "[ERROR] Running process with PID ${pid} is not a Unicorn"
-    exit 1
+  if [[ "$pid" != "" ]] ; then
+    if ! isUnicornProcess "$pid" ; then
+      log "[ERROR] Running process with PID ${pid} is not a Unicorn"
+      exit 1
+    fi
   fi
 }
 

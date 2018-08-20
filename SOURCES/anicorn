@@ -410,7 +410,7 @@ getPID() {
 
   pid=$(tr -d '\n\r' < "$pid_file")
 
-  if [[ ! -e "/proc/$pid" ]] ; then
+  if [[ ! -e "/proc/$pid" || ! -n "$pid" ]] ; then
     echo ""
     return
   fi

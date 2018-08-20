@@ -180,15 +180,13 @@ checkPIDFile() {
 
   pid=$(getPID)
 
-  if [[ "$pid" == "" && -e "$pid_file" ]] ; then
+  if [[ -n "$pid" ]] ; then
+      if ! isUnicornProcess "$pid" ; then
+          log "[ERROR] Running process with PID ${pid} is not a Unicorn"
+          exit 1
+      fi
+  else
       rm -f "$pid_file"
-  fi
-
-  if [[ "$pid" != "" ]] ; then
-    if ! isUnicornProcess "$pid" ; then
-      log "[ERROR] Running process with PID ${pid} is not a Unicorn"
-      exit 1
-    fi
   fi
 }
 

@@ -2,7 +2,7 @@
 
 Summary:         Simple utility for starting/restarting Unicorn
 Name:            anicorn
-Version:         2.1.6
+Version:         2.1.7
 Release:         0%{?dist}
 Group:           Applications/System
 License:         EKOL
@@ -43,6 +43,9 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Thu Aug 30 2018 Anton Novojilov <andy@essentialkaos.com> - 2.1.7-0
+- Fixed getting PID from empty PID file
+
 * Fri Jul 06 2018 Gleb Goncharov <g.goncharov@fun-box.ru> - 2.1.6-0
 - Fixed bug with checking dead process if it is a Unicorn
 

@@ -3,7 +3,7 @@
 ########################################################################################
 
 APP="Anicorn"
-VER="2.1.6"
+VER="2.1.7"
 DESC="Simple utility for starting/restarting Unicorn"
 
 ########################################################################################
@@ -180,15 +180,13 @@ checkPIDFile() {
 
   pid=$(getPID)
 
-  if [[ "$pid" == "" && -e "$pid_file" ]] ; then
+  if [[ -n "$pid" ]] ; then
+      if ! isUnicornProcess "$pid" ; then
+          log "[ERROR] Running process with PID ${pid} is not a Unicorn"
+          exit 1
+      fi
+  else
       rm -f "$pid_file"
-  fi
-
-  if [[ "$pid" != "" ]] ; then
-    if ! isUnicornProcess "$pid" ; then
-      log "[ERROR] Running process with PID ${pid} is not a Unicorn"
-      exit 1
-    fi
   fi
 }
 
@@ -345,7 +343,7 @@ isNewMasterSpawned() {
 
     pid=$(getPID)
 
-    if [[ "$pid" == "" || ! -e "/proc/$pid" ]] ; then
+    if [[ -z "$pid" ]] ; then
       continue
     fi
 
@@ -404,14 +402,12 @@ getPID() {
   local pid
 
   if [[ ! -e "$pid_file" ]] ; then
-    echo ""
     return
   fi
 
   pid=$(tr -d '\n\r' < "$pid_file")
 
-  if [[ ! -e "/proc/$pid" ]] ; then
-    echo ""
+  if [[ -z "$pid" || ! -e "/proc/$pid" ]] ; then
     return
   fi
 

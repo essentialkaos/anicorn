@@ -11,7 +11,6 @@ matrix:
 env:
   global:
     - IMAGE=essentialkaos/perfecto:centos7
-    - SHELLCHECK_OPTS='-e SC2034 -e SC2181 -e SC2015 -e SC2154 -e SC1117'
 
 before_install:
   - wget https://storage.googleapis.com/shellcheck/shellcheck-latest.linux.x86_64.tar.xz

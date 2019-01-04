@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC1117,SC2015,SC2034,SC2181,SC2154
 
 ########################################################################################
 
 APP="Anicorn"
-VER="2.1.7"
+VER="2.1.8"
 DESC="Simple utility for starting/restarting Unicorn"
 
 ########################################################################################
@@ -139,9 +140,7 @@ checkConfig() {
 # Code: No
 # Echo: No
 checkRuby() {
-  type ruby &>/dev/null
-
-  if [[ $? -ne 0 ]] ; then
+  if ! type ruby &>/dev/null ; then
     log "[ERROR] Ruby is required for $APP"
     exit 1
   fi

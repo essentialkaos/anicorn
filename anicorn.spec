@@ -2,7 +2,7 @@
 
 Summary:         Simple utility for starting/restarting Unicorn
 Name:            anicorn
-Version:         2.1.7
+Version:         2.1.8
 Release:         0%{?dist}
 Group:           Applications/System
 License:         EKOL
@@ -43,6 +43,9 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Fri Jan 04 2019 Anton Novojilov <andy@essentialkaos.com> - 2.1.8-0
+- Code refactoring
+
 * Thu Aug 30 2018 Anton Novojilov <andy@essentialkaos.com> - 2.1.7-0
 - Fixed getting PID from empty PID file
 

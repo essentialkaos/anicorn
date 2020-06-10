@@ -15,18 +15,11 @@
 
 ### Installation
 
-#### From ESSENTIAL KAOS Public repo for RHEL6/CentOS6
+#### From ESSENTIAL KAOS Public repository
 
 ```
-[sudo] yum install -y https://yum.kaos.st/kaos-repo-latest.el6.noarch.rpm
-[sudo] yum install anicorn
-```
-
-#### From ESSENTIAL KAOS Public repo for RHEL7/CentOS7
-
-```
-[sudo] yum install -y https://yum.kaos.st/kaos-repo-latest.el7.noarch.rpm
-[sudo] yum install anicorn
+sudo yum install -y https://yum.kaos.st/get/$(uname -r).rpm
+sudo yum install anicorn
 ```
 
 ### Usage

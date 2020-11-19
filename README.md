@@ -1,7 +1,7 @@
 <p align="center"><a href="#readme"><img src="https://gh.kaos.st/anicorn.png"/></a></p>
 
 <p align="center">
-  <a href="https://travis-ci.org/essentialkaos/anicorn"><img src="https://travis-ci.org/essentialkaos/anicorn.svg"></a>
+  <a href="https://github.com/essentialkaos/anicorn/actions"><img src="https://github.com/essentialkaos/anicorn/workflows/CI/badge.svg" alt="GitHub Actions Status" /></a>
   <a href="#license"><img src="https://gh.kaos.st/apache2.svg"></a>
 </p>
 
@@ -42,8 +42,8 @@ Examples
 
 | Branch | Status |
 |--------|--------|
-| `master` | [![Build Status](https://travis-ci.org/essentialkaos/anicorn.svg?branch=master)](https://travis-ci.org/essentialkaos/anicorn) |
-| `develop` | [![Build Status](https://travis-ci.org/essentialkaos/anicorn.svg?branch=develop)](https://travis-ci.org/essentialkaos/anicorn) |
+| `master` | [![CI](https://github.com/essentialkaos/anicorn/workflows/CI/badge.svg?branch=master)](https://github.com/essentialkaos/anicorn/actions) |
+| `develop` | [![CI](https://github.com/essentialkaos/anicorn/workflows/CI/badge.svg?branch=develop)](https://github.com/essentialkaos/anicorn/actions) |
 
 ### Contributing
 

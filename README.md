@@ -35,7 +35,6 @@ Examples
 
   anicorn /srv/projects/example/current/config/unicorn.rb
   Run Unicorn with Anicorn
-
 ```
 
 ### Build Status

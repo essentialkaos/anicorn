@@ -22,6 +22,14 @@ sudo yum install -y https://yum.kaos.st/get/$(uname -r).rpm
 sudo yum install anicorn
 ```
 
+#### Using Makefile and Git
+
+```bash
+git clone https://kaos.sh/anicorn.git
+cd anicorn
+sudo make install
+```
+
 ### Usage
 
 ```

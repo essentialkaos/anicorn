@@ -1,19 +1,19 @@
 ################################################################################
 
-Summary:         Simple utility for starting/restarting Unicorn
-Name:            anicorn
-Version:         2.1.8
-Release:         0%{?dist}
-Group:           Applications/System
-License:         Apache License, Version 2.0
-URL:             https://github.com/essentialkaos/anicorn
+Summary:    Simple utility for starting/restarting Unicorn
+Name:       anicorn
+Version:    2.1.9
+Release:    0%{?dist}
+Group:      Applications/System
+License:    Apache License, Version 2.0
+URL:        https://kaos.sh/anicorn
 
-Source0:         https://source.kaos.st/%{name}/%{name}-%{version}.tar.bz2
+Source0:    https://source.kaos.st/%{name}/%{name}-%{version}.tar.bz2
 
-BuildArch:       noarch
-BuildRoot:       %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildArch:  noarch
+BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Provides:        %{name} = %{version}-%{release}
+Provides:   %{name} = %{version}-%{release}
 
 ################################################################################
 
@@ -35,6 +35,8 @@ install -pm 775 %{name} %{buildroot}%{_bindir}/%{name}
 %clean
 rm -rf %{buildroot}
 
+################################################################################
+
 %files
 %defattr(-,root,root,-)
 %doc LICENSE
@@ -43,6 +45,9 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Thu Nov 30 2023 Anton Novojilov <andy@essentialkaos.com> - 2.1.9-0
+- Code refactoring
+
 * Fri Jan 04 2019 Anton Novojilov <andy@essentialkaos.com> - 2.1.8-0
 - Code refactoring
 

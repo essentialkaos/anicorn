@@ -2,7 +2,7 @@
 
 Summary:    Simple utility for starting/restarting Unicorn
 Name:       anicorn
-Version:    2.1.9
+Version:    2.1.10
 Release:    0%{?dist}
 Group:      Applications/System
 License:    Apache License, Version 2.0
@@ -45,6 +45,9 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Tue Jun 11 2024 Anton Novojilov <andy@essentialkaos.com> - 2.1.10-0
+- Improved automatic disabling of color output usage
+
 * Thu Nov 30 2023 Anton Novojilov <andy@essentialkaos.com> - 2.1.9-0
 - Code refactoring
 
